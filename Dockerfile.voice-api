@@ -1,0 +1,13 @@
+# Reference GPU container for hosts with NVIDIA drivers + compatible CUDA runtime.
+# The original Parler Mini checkpoint needs a GPU and ~3.5 GB model weights.
+ARG BASE_IMAGE=pytorch/pytorch:2.4.1-cuda12.1-cudnn9-runtime
+FROM ${BASE_IMAGE}
+WORKDIR /srv
+RUN apt-get update && apt-get install -y --no-install-recommends git libsndfile1 && rm -rf /var/lib/apt/lists/*
+COPY requirements-voice-api.txt ./
+RUN pip install --no-cache-dir -r requirements-voice-api.txt \
+    && pip install --no-cache-dir 'git+https://github.com/huggingface/parler-tts.git'
+COPY api_service ./api_service
+ENV PARLER_PRELOAD_ON_START=true
+EXPOSE 8000
+CMD ["uvicorn", "api_service.server:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]

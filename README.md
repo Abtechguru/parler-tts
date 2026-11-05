@@ -199,3 +199,8 @@ Namely, we're looking at ways to improve both quality and speed:
 - Evaluation:
     - Add more evaluation metrics
 
+## DUEL LAB — Optional spoken competition host
+
+This fork also contains an **opt-in** inference API adapter for the DUEL LAB UniversityDUEL preparation site: see [`DUEL_LAB_INTEGRATION.md`](DUEL_LAB_INTEGRATION.md), [`api_service/server.py`](api_service/server.py), and [`Dockerfile.voice-api`](Dockerfile.voice-api).
+
+The adapter uses the `parler-tts/parler-tts-mini-v1` voice checkpoint through the canonical upstream package and is designed to run on a separate CUDA-capable host, **not** inside DUEL LAB's Vercel static site. Model weights are not committed here; the GPU host must be separately provisioned and configured. Requests require a private service key. DUEL LAB itself works without a model server using free browser text-to-speech, and its optional Parler proxy remains disabled until inference hosting and quota controls are configured.
